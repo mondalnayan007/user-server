@@ -99,8 +99,12 @@ app.use(express.json())
     res.send(users)
  })
  app.post('/users',(req,res)=>{
-    console.log('getting user from client side ', req.body);
+    
     const newUser = req.body;
+    newUser.id = users.length + 1;
+    users.push(newUser);
+    res.send(newUser)
+    console.log('getting user from client side ', newUser);
  })
 
 
