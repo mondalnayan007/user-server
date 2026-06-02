@@ -1,3 +1,4 @@
+ require('dotenv').config();
  const express = require('express');
  const { MongoClient, ServerApiVersion } = require('mongodb');
  const cors = require('cors');
@@ -8,7 +9,7 @@
 app.use(cors());
 app.use(express.json())
 
-const uri = "mongodb+srv://simpleDB:nttsflTkGFoR3hFe@cluster0.kc2s7sf.mongodb.net/?appName=Cluster0";
+const uri = process.env.MONGO_URI;
  
  const users = [
   {
