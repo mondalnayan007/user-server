@@ -1,96 +1,96 @@
- require('dotenv').config();
- const express = require('express');
- const { MongoClient, ServerApiVersion } = require('mongodb');
- const cors = require('cors');
- const app = express();
- const port = 4000;
+require('dotenv').config();
+const express = require('express');
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const cors = require('cors');
+const app = express();
+const port = 4000;
 
 
 app.use(cors());
 app.use(express.json())
 
 const uri = process.env.MONGO_URI;
- 
- const users = [
+
+const users = [
   {
     id: 1,
     name: "Arif Rahman",
     email: "arif.rahman@example.com",
     role: "Admin",
-    
-    
+
+
   },
   {
     id: 2,
     name: "Nusrat Jahan",
-    
+
     email: "nusrat.jahan@example.com",
     role: "User",
-    
+
   },
   {
     id: 3,
     name: "Tanvir Ahmed",
-    
+
     email: "tanvir.ahmed@example.com",
     role: "User",
-    
+
   },
   {
     id: 4,
     name: "Sadia Islam",
-    
+
     email: "sadia.islam@example.com",
     role: "Moderator",
-    
+
   },
   {
     id: 5,
     name: "Imran Hossain",
-    
+
     email: "imran.hossain@example.com",
     role: "User",
-   
+
   },
   {
     id: 6,
     name: "Farhana Chowdhury",
-    
+
     email: "farhana.c@example.com",
     role: "User",
-    
+
   },
   {
     id: 7,
     name: "Asif Iqbal",
-    
+
     email: "asif.iqbal@example.com",
     role: "User",
-    
+
   },
   {
     id: 8,
     name: "Mehedi Hasan",
-   
+
     email: "mehedi.hasan@example.com",
     role: "Moderator",
-    
+
   },
   {
     id: 9,
     name: "Anika Tasnim",
-    
+
     email: "anika.t@example.com",
     role: "User",
-    
+
   },
   {
     id: 10,
     name: "Sajid Khan",
-    
+
     email: "sajid.khan@example.com",
     role: "User",
-    
+
   }
 ];
 
@@ -170,11 +170,11 @@ const products = [
 
 
 
- app.get('/',(req,res)=>{
-    res.send('Hellooo user')
- })
+app.get('/', (req, res) => {
+  res.send('Hellooo user')
+})
 
- // Create a MongoClient with a MongoClientOptions object to set the Stable API version
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -188,46 +188,63 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+
+
+    const userDB = client.db('userDB');
+    const productsCollection = userDB.collection('products')
+
+
+
+    app.post('/products', async (req, res) => {
+      const newProduct = req.body;
+      const result = await productsCollection.insertOne(newProduct)
+      res.send(result);
+    })
+
+
+
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
-    
+
   }
 }
 run().catch(console.dir);
 
-            //  mongoDb connection part close
+//  mongoDb connection part close
 
 
 
- app.get('/users',(req,res)=>{
-    res.send(users)
- })
- app.post('/users',(req,res)=>{
-    
-    const newUser = req.body;
-    newUser.id = users.length + 1;
-    users.push(newUser);
-    res.send(newUser)
-    console.log('getting user from client side ', newUser);
- })
+app.get('/users', (req, res) => {
+  res.send(users)
+})
+app.post('/users', (req, res) => {
 
- app.get('/products',(req,res)=>{
+  const newUser = req.body;
+  newUser.id = users.length + 1;
+  users.push(newUser);
+  res.send(newUser)
+  console.log('getting user from client side ', newUser);
+})
+
+app.get('/products', (req, res) => {
   res.send(products);
- })
+})
 
- app.post('/products',(req,res)=>{
-     console.log(req.body);
-     const newProduct = req.body;
-     newProduct.id = products.length + 1;
-     products.push(newProduct);
-     res.send(newProduct)
-     console.log('from client side',newProduct);
- })
+//  app.post('/products',(req,res)=>{
+//      console.log(req.body);
+//      const newProduct = req.body;
+//      newProduct.id = products.length + 1;
+//      products.push(newProduct);
+//      res.send(newProduct)
+//      console.log('from client side',newProduct);
+//  })
 
 
- app.listen(port, ()=>{
-    console.log('Server is running at port number :', port);
- })
+app.listen(port, () => {
+  console.log('Server is running at port number :', port);
+})
