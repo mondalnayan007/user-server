@@ -145,6 +145,23 @@ async function run() {
       res.send(result)
     })
 
+    app.patch('/products/:id',async(req,res)=>{
+      const id = req.params.id;
+      const updateProduct = req.body;
+      const query = {_id: new ObjectId(id)};
+      const update = {
+        $set: {
+          title: updateProduct.title,
+          description: updateProduct.description,
+          price: updateProduct.price,
+          url: updateProduct.url
+        }
+      }
+      const options = {};
+      const result = await productsCollection.updateOne(query,update,options);
+      res.send(result);
+    })
+
 
     app.post('/users', async (req,res)=>{
       const newUser = req.body;
